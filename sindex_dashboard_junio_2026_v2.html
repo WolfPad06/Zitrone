@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SINDEX · Panel Comercial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FBFBFD; --surface:#FFFFFF; --inset:#F5F6F9; --track:#EEF0F4;
+    --border:#E7E9EF; --border-2:#DCDFE7;
+    --ink:#171A21; --muted:#5C6373; --faint:#8B92A1;
+    --blue:#4D6BF5; --blue-deep:#3a55d4; --blue-soft:#EEF1FE; --blue-line:#D6DEFB;
+    --green:#15976B; --green-soft:#E6F4EE;
+    --amber:#B6810E; --amber-soft:#FAF1DC;
+    --red:#CE4133; --red-soft:#FBEAE7;
+    --sh-sm:0 1px 2px rgba(16,24,40,.04),0 1px 3px rgba(16,24,40,.06);
+    --sh-md:0 4px 18px rgba(16,24,40,.06),0 2px 6px rgba(16,24,40,.035);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;letter-spacing:-0.005em}
+  .wrap{max-width:1100px;margin:auto;padding:36px 32px 72px}
+  .mono{font-family:'DM Mono',monospace}
+  .tight{font-family:'Inter Tight',sans-serif}
+  .eyebrow{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--faint)}
+  h2{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:16px;letter-spacing:-0.01em;color:var(--ink);margin-bottom:18px}
+  section{margin-bottom:36px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--sh-sm)}
+
+  /* TOPBAR */
+  .topbar{display:flex;justify-content:space-between;align-items:center;padding-bottom:24px;margin-bottom:28px;border-bottom:1px solid var(--border)}
+  .logo{display:flex;align-items:center;gap:10px;font-family:'Inter Tight';font-weight:700;font-size:16px}
+  .logo .mk{width:26px;height:26px;border-radius:7px;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:14px;font-weight:700}
+  .logo .div{color:var(--border-2);font-weight:400}
+  .logo .sx{color:var(--blue)}
+  .pills{display:flex;gap:8px}
+  .pill{font-family:'DM Mono';font-size:11px;letter-spacing:0.03em;padding:7px 13px;border-radius:8px;border:1px solid var(--border);color:var(--muted);background:var(--surface)}
+  .pill.on{background:var(--blue-soft);border-color:var(--blue-line);color:var(--blue-deep)}
+
+  /* HEADER */
+  .phead{margin-bottom:26px}
+  .phead .eyebrow{margin-bottom:9px}
+  .phead h1{font-family:'Inter Tight';font-weight:700;font-size:27px;letter-spacing:-0.02em;margin-bottom:6px}
+  .phead p{color:var(--muted);font-size:14px;max-width:560px}
+  .phead p b{color:var(--ink);font-weight:600}
+
+  /* HERO */
+  .hero{display:grid;grid-template-columns:1.1fr 1fr;gap:18px;margin-bottom:34px}
+  .hero .score{padding:28px 30px}
+  .score .lbl{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+  .score .lbl .eyebrow{letter-spacing:0.07em}
+  .score .chip{font-family:'DM Mono';font-size:11px;padding:4px 11px;border-radius:20px;background:var(--green-soft);color:var(--green);display:inline-flex;align-items:center;gap:6px}
+  .score .chip::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--green)}
+  .score .big{font-family:'Inter Tight';font-weight:700;font-size:60px;letter-spacing:-0.03em;line-height:1;margin:6px 0 18px}
+  .score .big small{font-size:22px;color:var(--faint);font-weight:600;letter-spacing:0}
+  /* health scale */
+  .scale{position:relative;height:8px;border-radius:6px;overflow:hidden;display:flex;margin-bottom:8px}
+  .scale .z1{flex:5;background:var(--red-soft)} .scale .z2{flex:2;background:var(--amber-soft)} .scale .z3{flex:3;background:var(--green-soft)}
+  .scale-mk{position:absolute;top:-3px;width:3px;height:14px;border-radius:3px;background:var(--ink);left:84.4%}
+  .scale-cap{display:flex;justify-content:space-between;font-family:'DM Mono';font-size:10px;color:var(--faint)}
+  .delta{margin-top:14px;font-size:12.5px;color:var(--muted)}
+  .delta b{color:var(--green);font-weight:600}
+
+  .metrics{padding:24px 26px;display:grid;grid-template-columns:1fr 1fr;gap:20px 16px;align-content:center}
+  .metric .v{font-family:'Inter Tight';font-weight:700;font-size:30px;letter-spacing:-0.02em;line-height:1}
+  .metric .v.pos{color:var(--green)} .metric .v.neg{color:var(--red)}
+  .metric .k{font-size:12px;color:var(--muted);margin-top:4px}
+
+  /* RUBROS */
+  .rubro{display:grid;grid-template-columns:148px 1fr 44px;gap:18px;align-items:center;padding:11px 0}
+  .rubro+.rubro{border-top:1px solid var(--border)}
+  .rubro .name{font-size:13.5px;font-weight:500}
+  .rubro .name span{display:block;font-family:'DM Mono';font-size:9.5px;letter-spacing:0.03em;margin-top:2px;font-weight:400}
+  .rubro .name span.up{color:var(--green)} .rubro .name span.dn{color:var(--amber)}
+  .bar{height:8px;background:var(--track);border-radius:6px;overflow:hidden}
+  .bar i{display:block;height:100%;border-radius:6px;background:var(--blue);transform-origin:left;animation:grow .9s cubic-bezier(.2,.7,.2,1) both}
+  .rubro .val{font-family:'DM Mono';font-weight:500;font-size:14px;text-align:right;color:var(--ink)}
+  @keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+  .cond{margin-top:16px;padding:13px 16px;background:var(--inset);border-radius:10px;font-size:12.5px;color:var(--muted)}
+  .cond b{color:var(--ink);font-weight:600}
+
+  /* RANKINGS */
+  .tabs{display:inline-flex;gap:4px;padding:4px;background:var(--inset);border-radius:11px;margin-bottom:18px}
+  .tab{font-family:'Inter';font-size:13px;font-weight:500;padding:7px 16px;border-radius:8px;border:none;background:transparent;color:var(--muted);cursor:pointer;transition:all .15s}
+  .tab:hover{color:var(--ink)}
+  .tab.active{background:var(--blue);color:#fff;box-shadow:var(--sh-sm)}
+  .tab:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+  .cols2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .rank{padding:20px 22px}
+  .rank h3{font-family:'DM Mono';font-size:11px;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:14px;color:var(--muted);display:flex;align-items:center;gap:7px}
+  .rank h3 .ar{font-size:13px}
+  .rank.up h3 .ar{color:var(--green)} .rank.dn h3 .ar{color:var(--red)}
+  .rk{display:flex;align-items:center;gap:12px;padding:9px 0}
+  .rk+.rk{border-top:1px solid var(--border)}
+  .rk .ix{font-family:'DM Mono';font-size:12px;color:var(--faint);min-width:14px}
+  .rk .pdv{flex:1;font-size:13.5px;font-weight:500}
+  .rk .n{font-family:'DM Mono';font-size:10.5px;color:var(--faint);background:var(--inset);padding:2px 7px;border-radius:5px}
+  .rk .sc{font-family:'DM Mono';font-weight:500;font-size:14px}
+  .rk .sc.g{color:var(--green)} .rk .sc.y{color:var(--amber)} .rk .sc.r{color:var(--red)}
+  .thrnote{margin-top:14px;font-size:12px;color:var(--faint)}
+  .thrnote .mono{color:var(--muted)}
+  .empty{padding:46px 30px;text-align:center;border:1px dashed var(--border-2);border-radius:14px;background:var(--inset)}
+  .empty .e1{font-family:'Inter Tight';font-weight:600;font-size:15px;color:var(--muted);margin-bottom:6px}
+  .empty .e2{font-size:13px;color:var(--faint);max-width:420px;margin:0 auto}
+  .hide{display:none}
+
+  /* FOCOS */
+  .foco{display:flex;gap:16px;padding:18px 20px;border-radius:13px;border:1px solid var(--border);margin-bottom:12px;background:var(--surface);box-shadow:var(--sh-sm)}
+  .foco .rail{width:3px;border-radius:3px;flex-shrink:0}
+  .foco.r .rail{background:var(--red)} .foco.a .rail{background:var(--amber)}
+  .foco .fc{flex:1}
+  .foco .fh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px}
+  .foco .fh .ft{font-family:'Inter Tight';font-weight:600;font-size:15px}
+  .foco .fh .tg{font-family:'DM Mono';font-size:10.5px;letter-spacing:0.03em;padding:3px 9px;border-radius:6px}
+  .foco.r .fh .tg{background:var(--red-soft);color:var(--red)} .foco.a .fh .tg{background:var(--amber-soft);color:var(--amber)}
+  .foco .fd{font-size:13px;color:var(--muted);line-height:1.55}
+  .foco .fd b{color:var(--ink);font-weight:600}
+
+  /* TEMAS */
+  .tema{padding:12px 0}
+  .tema+.tema{border-top:1px solid var(--border)}
+  .tema .th{display:flex;justify-content:space-between;font-size:13.5px;font-weight:500;margin-bottom:7px}
+  .tema .th .cnt{font-family:'DM Mono';font-size:11px;color:var(--faint);font-weight:400}
+  .stack{height:7px;border-radius:5px;overflow:hidden;display:flex;background:var(--track)}
+  .stack .p{background:var(--green)} .stack .x{background:var(--red)}
+  .tema .sm{font-family:'DM Mono';font-size:10.5px;color:var(--faint);margin-top:5px}
+
+  /* VOZ */
+  .voz{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .quote{padding:20px 22px}
+  .quote .qh{display:flex;justify-content:space-between;font-family:'DM Mono';font-size:10.5px;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:10px}
+  .quote.risk .qh{color:var(--red)} .quote.win .qh{color:var(--green)}
+  .quote p{font-size:13.5px;color:var(--ink);line-height:1.55}
+  .quote .src{font-family:'DM Mono';font-size:10.5px;color:var(--faint);margin-top:10px}
+
+  /* INSIGHTS */
+  .insights{padding:8px 26px}
+  .ins{display:flex;gap:16px;padding:15px 0}
+  .ins+.ins{border-top:1px solid var(--border)}
+  .ins .n{font-family:'Inter Tight';font-weight:700;font-size:15px;color:var(--blue);min-width:22px}
+  .ins .t{font-size:13.5px;line-height:1.55;color:var(--muted)}
+  .ins .t b{color:var(--ink);font-weight:600}
+
+  footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-family:'DM Mono';font-size:10.5px;color:var(--faint);letter-spacing:0.02em}
+
+  @media(prefers-reduced-motion:reduce){.bar i{animation:none}}
+  @media(max-width:760px){.hero,.cols2,.voz{grid-template-columns:1fr}.topbar{flex-direction:column;gap:14px;align-items:flex-start}}
+
+  .brandbadge{display:inline-flex;align-items:center;gap:14px}
+  .brandbadge img{height:48px;display:block}
+  .brandbadge .div{color:var(--border-2);font-weight:300;font-size:20px;line-height:1}
+  .brandbadge .sx{font-family:'Inter Tight';font-weight:700;font-size:16px;color:var(--blue);letter-spacing:-0.01em}
+  .voz2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .vcol{display:flex;flex-direction:column;gap:10px}
+  .vch{font-family:'DM Mono';font-size:11px;letter-spacing:0.05em;text-transform:uppercase;display:flex;align-items:center;gap:7px;margin-bottom:2px}
+  .vch.risk{color:var(--red)} .vch.win{color:var(--green)}
+  .qt{padding:15px 17px}
+  .qt .qhd{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .qt .qhd .qpdv{font-family:'Inter Tight';font-weight:600;font-size:13px;color:var(--ink)}
+  .qt .qhd .qsc{font-family:'DM Mono';font-size:11px;padding:2px 9px;border-radius:6px}
+  .qt.risk .qhd .qsc{background:var(--red-soft);color:var(--red)}
+  .qt.win .qhd .qsc{background:var(--green-soft);color:var(--green)}
+  .qt p{font-size:12.5px;color:var(--muted);line-height:1.5}
+  @media(max-width:760px){.voz2{grid-template-columns:1fr}}
+
+  .dual-si{display:flex;align-items:center;gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)}
+  .ds-item{display:flex;flex-direction:column;gap:2px}
+  .ds-lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.06em;text-transform:uppercase;color:var(--faint)}
+  .ds-val{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:15px;color:var(--ink)}
+  .ds-sep{color:var(--border-2);font-size:18px;font-weight:300}
+  .rubros-wrap{position:relative}
+  .rub-panel{transition:opacity .2s}
+  .inc-item{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--border)}
+  .inc-item:last-child{border-bottom:none}
+  .inc-bar-wrap{flex:1;height:7px;background:var(--track);border-radius:4px;overflow:hidden}
+  .inc-bar{height:100%;border-radius:4px;background:var(--blue)}
+  .inc-name{font-size:13.5px;font-weight:500;min-width:220px}
+  .inc-n{font-family:'DM Mono',monospace;font-size:11px;color:var(--faint);min-width:28px;text-align:right}
+  .voz-cli{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
+  .qc{padding:16px 18px;border-radius:10px;border:1px solid var(--border)}
+  .qc-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+  .qc-pdv{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:13px}
+  .qc-sc{font-family:'DM Mono',monospace;font-size:11px;padding:2px 9px;border-radius:6px;background:var(--green-soft);color:var(--green)}
+  .qc-sc.y{background:var(--amber-soft);color:var(--amber)}
+  .qc p{font-size:12.5px;color:var(--muted);line-height:1.55;margin:3px 0}
+  .qc .qc-tag{font-size:11px;color:var(--faint);font-style:italic}
+  .gap-alert{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--amber-soft);border:1px solid #e5c97a;border-radius:8px;margin-top:12px}
+  .gap-alert .ga-lbl{font-family:'DM Mono',monospace;font-size:10.5px;color:var(--amber);font-weight:600;white-space:nowrap}
+  .gap-alert .ga-txt{font-size:13px;color:var(--muted)}
+  .gap-alert .ga-txt b{color:var(--ink);font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="brandbadge"><img src="data:image/png;base64,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" alt="Zitrone"><span class="div">/</span><span class="sx">SINDEX</span></div>
+    <div class="pills">
+      <span class="pill on">Portafolio global</span>
+      <span class="pill">17–26 Jun 2026</span>
+      <span class="pill">Comensal</span>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <div class="phead">
+    <div class="eyebrow">Satisfacción del comensal · Portafolio global junio 2026</div>
+    <h1>SINDEX Junio · Análisis ejecutivo</h1>
+    <p>Resumen de <b>1,304 respuestas</b> en <b>25 PDV</b> + <b>10 contactos gerenciales</b>. Método: ponderación de SINDEX comensal + SINDEX contacto. Hallazgo crítico: <b>Variedad 3.78/5</b> es cuello de botella. <b>Emerson Planta 6.06</b> requiere auditoría operacional inmediata.</p>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="card score">
+      <div class="lbl"><span class="eyebrow">SINDEX global</span><span class="chip">Saludable</span></div>
+      <div class="big">8.44<small>/10</small></div>
+      <div class="scale"><span class="z1"></span><span class="z2"></span><span class="z3"></span><span class="scale-mk"></span></div>
+      <div class="scale-cap"><span>0 · Crítico</span><span>5 · Atención</span><span>7 · Saludable</span><span>10</span></div>
+      <div class="delta">Posición saludable del portafolio · <b>72% de respuestas positivas</b> contra 5% negativas.</div>
+      <div class="dual-si">
+        <div class="ds-item"><span class="ds-lbl">SINDEX Comensal</span><span class="ds-val">8.44</span></div>
+        <span class="ds-sep">·</span>
+        <div class="ds-item"><span class="ds-lbl">SINDEX Contacto</span><span class="ds-val">8.50</span></div>
+        <span class="ds-sep">·</span>
+        <div class="ds-item"><span class="ds-lbl">PDV con contacto</span><span class="ds-val">10 / 25</span></div>
+      </div>
+    </div>
+    <div class="card metrics">
+      <div class="metric"><div class="v">1,304</div><div class="k">Respuestas comensales</div></div>
+      <div class="metric"><div class="v">25</div><div class="k">PDV evaluados</div></div>
+      <div class="metric"><div class="v pos">72%</div><div class="k">Positivos (≥8)</div></div>
+      <div class="metric"><div class="v neg">8%</div><div class="k">Críticos (≤5)</div></div>
+    </div>
+  </div>
+
+  <!-- RUBROS -->
+  <section>
+    <h2>Puntuación por rubro</h2>
+    <div class="card" style="padding:22px 24px">
+      <div class="rubro"><div class="name">Limpieza <span class="up">Fortaleza</span></div><div class="bar"><i style="width:92%"></i></div><div class="val">4.60</div></div>
+      <div class="rubro"><div class="name">Atención <span class="up">Fortaleza</span></div><div class="bar"><i style="width:90.2%"></i></div><div class="val">4.51</div></div>
+      <div class="rubro"><div class="name">Servicio</div><div class="bar"><i style="width:89.2%"></i></div><div class="val">4.46</div></div>
+      <div class="rubro"><div class="name">Sabor</div><div class="bar"><i style="width:81.4%"></i></div><div class="val">4.07</div></div>
+      <div class="rubro"><div class="name">Temperatura</div><div class="bar"><i style="width:80.8%"></i></div><div class="val">4.04</div></div>
+      <div class="rubro"><div class="name">Variedad <span class="dn">Área de oportunidad</span></div><div class="bar"><i style="width:75.6%"></i></div><div class="val">3.78</div></div>
+      <div class="cond"><b>Snacks / pantry: 3.52</b> — rubro condicional: solo aplica a los <b>398 registros</b> de PDV con servicio de pantry y no se promedia donde no existe.</div>
+    </div>
+  </section>
+
+  <!-- RUBROS CONTACTO (hidden, shown on cliente tab) -->
+  <section id="rubros-cliente-sec" class="hide">
+    <h2>Puntuación por rubro · Contacto <span style="font-size:11px;font-weight:400;color:var(--faint);font-family:'DM Mono',monospace;margin-left:8px">escala 1–5 · perspectiva del contacto directo</span></h2>
+    <div class="card" style="padding:22px 24px">
+      <div class="rubro"><div class="name">Atención del personal <span class="up">Fortaleza</span></div><div class="bar"><i style="width:91.2%"></i></div><div class="val">4.56</div></div>
+      <div class="rubro"><div class="name">Comunicación ejecutiva <span class="up">Fortaleza</span></div><div class="bar"><i style="width:86.6%"></i></div><div class="val">4.33</div></div>
+      <div class="rubro"><div class="name">Puntualidad y horarios <span class="up">Saludable</span></div><div class="bar"><i style="width:86.6%"></i></div><div class="val">4.33</div></div>
+      <div class="rubro"><div class="name">Manejo de incidencias</div><div class="bar"><i style="width:80%"></i></div><div class="val">4.00</div></div>
+      <div class="rubro"><div class="name">Calidad de los alimentos <span class="dn">Área de oportunidad</span></div><div class="bar"><i style="width:77.8%"></i></div><div class="val">3.89</div></div>
+      <div class="rubro"><div class="name">Variedad del menú <span class="dn">Área de oportunidad</span></div><div class="bar"><i style="width:77.8%"></i></div><div class="val">3.89</div></div>
+      <div class="cond" style="margin-top:16px"><b>Incidencias más reportadas:</b> Manejo de quejas (4 PDV), Variedad del menú (4 PDV), Tiempos de espera (3 PDV). Estos temas aparecen en los comentarios del contacto como áreas de mejora.</div>
+    </div>
+  </section>
+
+  <!-- RANKINGS -->
+  <section>
+    <h2>Ranking de cuentas</h2>
+    <div class="tabs" role="tablist">
+      <button class="tab active" data-t="comensal" role="tab">Comensal</button>
+      <button class="tab" data-t="cliente" role="tab">Cliente</button>
+      <button class="tab" data-t="general" role="tab">General</button>
+    </div>
+
+    <div id="comensal">
+      <div class="cols2">
+        <div class="card rank up">
+          <h3><span class="ar">▲</span> Top 5 · SINDEX más alto</h3>
+          <div class="rk"><span class="ix">1</span><span class="pdv">Prologis</span><span class="n">n=22</span><span class="sc g">9.71</span></div>
+          <div class="rk"><span class="ix">2</span><span class="pdv">UFC</span><span class="n">n=24</span><span class="sc g">9.37</span></div>
+          <div class="rk"><span class="ix">3</span><span class="pdv">CHANEL</span><span class="n">n=15</span><span class="sc g">9.31</span></div>
+          <div class="rk"><span class="ix">4</span><span class="pdv">Disney</span><span class="n">n=55</span><span class="sc g">9.29</span></div>
+          <div class="rk"><span class="ix">5</span><span class="pdv">GDA</span><span class="n">n=89</span><span class="sc g">9.27</span></div>
+        </div>
+        <div class="card rank dn">
+          <h3><span class="ar">▼</span> Bottom 5 · Atención prioritaria</h3>
+          <div class="rk"><span class="ix">1</span><span class="pdv">Emerson Planta</span><span class="n">n=16</span><span class="sc r">5.90</span></div>
+          <div class="rk"><span class="ix">2</span><span class="pdv">Doordash</span><span class="n">n=294</span><span class="sc y">7.73</span></div>
+          <div class="rk"><span class="ix">3</span><span class="pdv">Nike CDMX</span><span class="n">n=53</span><span class="sc y">7.90</span></div>
+          <div class="rk"><span class="ix">4</span><span class="pdv">Symrise</span><span class="n">n=53</span><span class="sc y">8.01</span></div>
+          <div class="rk"><span class="ix">5</span><span class="pdv">Emerson</span><span class="n">n=48</span><span class="sc g">8.33</span></div>
+        </div>
+      </div>
+      <div class="thrnote">Umbral mínimo: <span class="mono">n ≥ 15</span> respuestas resueltas (21 de 25 PDV elegibles). Excluidos por muestra insuficiente: LVHM (2), Uber (2), Radiopolis (3), PUMA (13).</div>
+    </div>
+
+    <div id="cliente" class="hide">
+      <div class="cols2">
+        <div class="card rank up">
+          <h3><span class="ar">▲</span> Top 5 · Contacto más alto</h3>
+          <div class="rk"><span class="ix">1</span><span class="pdv">Alcon</span><span class="n">n=1</span><span class="sc g">10.00</span></div>
+          <div class="rk"><span class="ix">2</span><span class="pdv">Avery</span><span class="n">n=1</span><span class="sc g">9.33</span></div>
+          <div class="rk"><span class="ix">3</span><span class="pdv">CHANEL</span><span class="n">n=1</span><span class="sc g">9.00</span></div>
+          <div class="rk"><span class="ix">4</span><span class="pdv">Henkel</span><span class="n">n=1</span><span class="sc g">8.33</span></div>
+          <div class="rk"><span class="ix">5</span><span class="pdv">UFC</span><span class="n">n=1</span><span class="sc g">8.33</span></div>
+        </div>
+        <div class="card rank dn">
+          <h3><span class="ar">▼</span> Bottom 5 · Seguimiento prioritario</h3>
+          <div class="rk"><span class="ix">1</span><span class="pdv">Disney</span><span class="n">n=1</span><span class="sc y">7.00</span></div>
+          <div class="rk"><span class="ix">2</span><span class="pdv">LVHM</span><span class="n">n=1</span><span class="sc y">7.33</span></div>
+          <div class="rk"><span class="ix">3</span><span class="pdv">EVO Contadero</span><span class="n">n=1</span><span class="sc y">7.67</span></div>
+          <div class="rk"><span class="ix">4</span><span class="pdv">EVO St Fe</span><span class="n">n=1</span><span class="sc g">8.00</span></div>
+          <div class="rk"><span class="ix">5</span><span class="pdv">Henkel</span><span class="n">n=1</span><span class="sc g">8.33</span></div>
+        </div>
+      </div>
+      <div class="gap-alert" style="margin-top:14px">
+        <span class="ga-lbl">⚠ BRECHA DISNEY</span>
+        <span class="ga-txt">Comensal: <b>9.29</b> · Contacto: <b>7.00</b> — La mayor diferencia del portafolio. El cliente percibe oportunidades que los comensales no detectan. Escalar antes de la siguiente visita de cuenta.</span>
+      </div>
+      <div style="margin-top:22px"><h2 style="margin-bottom:14px">Voz del contacto · Lo que destacaron y lo que sugirieron</h2>
+        <div class="voz-cli">
+          <div class="qc"><div class="qc-head"><span class="qc-pdv">Alcon</span><span class="qc-sc">10.0 / 10</span></div><p class="qc-tag">Destacó</p><p>"Muy buena calidad de los alimentos."</p><p class="qc-tag" style="margin-top:6px">Sugirió</p><p>"Tiempo de espera, ojalá pueda mejorarse."</p></div>
+          <div class="qc"><div class="qc-head"><span class="qc-pdv">CHANEL</span><span class="qc-sc">9.0 / 10</span></div><p class="qc-tag">Destacó</p><p>"El menú de la taquiza, presentación, servicio y tiempo de ejecución fue fenomenal."</p><p class="qc-tag" style="margin-top:6px">Sugirió</p><p>"Incorporar opciones sin gluten o veganas."</p></div>
+          <div class="qc"><div class="qc-head"><span class="qc-pdv">Henkel</span><span class="qc-sc">8.33 / 10</span></div><p class="qc-tag">Destacó</p><p>"La apertura del personal para mejorar: cambio de proveedor de carne, tamaño de cortes."</p><p class="qc-tag" style="margin-top:6px">Sugirió</p><p>"Entender los gustos y adaptar el menú."</p></div>
+          <div class="qc"><div class="qc-head"><span class="qc-pdv">Disney</span><span class="qc-sc y">7.0 / 10</span></div><p class="qc-tag">Destacó</p><p>"El nuevo gerente del servicio es eficiente, ordenado y atiende cada necesidad."</p><p class="qc-tag" style="margin-top:6px">Sugirió</p><p>"Mejorar coordinación logística y calidad de alimentos (croquetas, salsas, postres)."</p></div>
+        </div>
+      </div>
+      <div class="thrnote" style="margin-top:14px">Encuesta de contacto directo: 1 respuesta mensual por PDV · 9 de 24 PDV respondieron en este periodo · Escala 0–10</div>
+    </div>
+    <div id="general" class="hide">
+      <div class="cols2">
+        <div class="card rank up">
+          <h3><span class="ar">▲</span> Top 5 · Score combinado</h3>
+          <div class="rk"><span class="ix">1</span><span class="pdv">Alcon</span><span class="n">com+cli</span><span class="sc g">9.33</span></div>
+          <div class="rk"><span class="ix">2</span><span class="pdv">CHANEL</span><span class="n">com+cli</span><span class="sc g">9.16</span></div>
+          <div class="rk"><span class="ix">3</span><span class="pdv">Avery</span><span class="n">com+cli</span><span class="sc g">9.15</span></div>
+          <div class="rk"><span class="ix">4</span><span class="pdv">UFC</span><span class="n">com+cli</span><span class="sc g">8.85</span></div>
+          <div class="rk"><span class="ix">5</span><span class="pdv">EVO St Fe</span><span class="n">com+cli</span><span class="sc g">8.62</span></div>
+        </div>
+        <div class="card rank dn">
+          <h3><span class="ar">▼</span> Bottom 5 · Seguimiento prioritario</h3>
+          <div class="rk"><span class="ix">1</span><span class="pdv">LVHM</span><span class="n">com+cli</span><span class="sc g">8.08</span></div>
+          <div class="rk"><span class="ix">2</span><span class="pdv">Disney</span><span class="n">com+cli</span><span class="sc g">8.15</span></div>
+          <div class="rk"><span class="ix">3</span><span class="pdv">EVO Contadero</span><span class="n">com+cli</span><span class="sc g">8.27</span></div>
+          <div class="rk"><span class="ix">4</span><span class="pdv">Henkel</span><span class="n">com+cli</span><span class="sc g">8.47</span></div>
+          <div class="rk"><span class="ix">5</span><span class="pdv">EVO St Fe</span><span class="n">com+cli</span><span class="sc g">8.62</span></div>
+        </div>
+      </div>
+      <div class="thrnote" style="margin-top:14px">Score general = promedio de SINDEX comensal + SINDEX contacto por PDV · Solo 9 de 24 PDV tienen ambas encuestas en este periodo · Los 15 restantes aparecen únicamente en el ranking de Comensal.</div>
+    </div>
+  </section>
+
+  <!-- FOCOS -->
+  <section>
+    <h2>Focos de atención</h2>
+    <div class="foco r"><div class="rail"></div><div class="fc">
+      <div class="fh"><span class="ft">Emerson Planta</span><span class="tg">Crítico · 6.06</span></div>
+      <div class="fd">Único PDV en zona de atención (5.0–6.9). Servicio 2.89, Variedad 2.50, Sabor 3.50. No es fluctuación: es deficiencia operacional. Comentarios: <b>repetición extrema (pescado/cerdo), falta opciones segundo turno, calidad inconsistente</b> ("salada", "quemada", "tortillas duras"). Recomendación: <b>auditoría de operaciones + intervención inmediata en segunda línea</b>.</div>
+    </div></div>
+    <div class="foco r"><div class="rail"></div><div class="fc">
+      <div class="fh"><span class="ft">Doordash</span><span class="tg">Volatilidad crítica · 7.73</span></div>
+      <div class="fd">Score 7.73 esconde <b>alta variabilidad</b> (σ 2.02). Comensales reportan <b>cambios negativos percibidos</b>: "quitaron frutas/yogurt", "quitaron guacamole", "antes mejor variedad". Señal comercial: cliente siente reducción de valor en beneficios. <b>Requiere reunión KAM inmediata para alineación en propuesta de valor</b>.</div>
+    </div></div>
+    <div class="foco a"><div class="rail"></div><div class="fc">
+      <div class="fh"><span class="ft">Variedad</span><span class="tg">Transversal · todo el portafolio</span></div>
+      <div class="fd">No es un PDV: es <b>sistémico</b>. Rubro más bajo a nivel global (3.78) y segundo tema más comentado (145 menciones). Candidato directo para el <b>nuevo creador de ciclos de menú</b>.</div>
+    </div></div>
+    <div class="foco a"><div class="rail"></div><div class="fc">
+      <div class="fh"><span class="ft">Disney</span><span class="tg">Brecha comensal vs contacto</span></div>
+      <div class="fd">El comensal la califica <b>9.29</b> (top portafolio) pero el contacto directo da <b>7.00</b> — la mayor brecha del portafolio. Los comensales están contentos; el cliente percibe fallas en coordinación logística, calidad de alimentos y entregables. <b>Prioridad para el KAM antes de la siguiente visita de cuenta.</b></div>
+    </div></div>
+  </section>
+
+  <!-- TEMAS -->
+  <section>
+    <h2>Comentarios recurrentes</h2>
+    <div class="card" style="padding:18px 24px">
+      <div class="tema"><div class="th"><span>Atención y servicio</span><span class="cnt">193 menciones</span></div><div class="stack"><span class="p" style="width:75%"></span><span class="x" style="width:8%"></span></div><div class="sm">145 positivos · 16 negativos · fortaleza confirmada en texto</div></div>
+      <div class="tema"><div class="th"><span>Variedad / repetición</span><span class="cnt">145 menciones</span></div><div class="stack"><span class="p" style="width:46%"></span><span class="x" style="width:13%"></span></div><div class="sm">67 positivos · 19 negativos · resto neutro</div></div>
+      <div class="tema"><div class="th"><span>Porción / disponibilidad</span><span class="cnt">134 menciones</span></div><div class="stack"><span class="p" style="width:47%"></span><span class="x" style="width:10%"></span></div><div class="sm">63 positivos · 14 negativos · "después de la 1 ya no hay línea saludable"</div></div>
+      <div class="tema"><div class="th"><span>Snacks / pantry</span><span class="cnt">100 menciones</span></div><div class="stack"><span class="p" style="width:33%"></span><span class="x" style="width:17%"></span></div><div class="sm">33 positivos · 17 negativos · "regresen la fruta y el yogurt"</div></div>
+      <div class="tema"><div class="th"><span>Calidad / salud</span><span class="cnt">88 menciones</span></div><div class="stack"><span class="p" style="width:30%"></span><span class="x" style="width:28%"></span></div><div class="sm">26 positivos · 25 negativos · la proporción negativa más alta</div></div>
+    </div>
+  </section>
+
+  <!-- VOZ -->
+  <section>
+    <h2>Voz del comensal</h2>
+    <div class="voz2">
+      <div class="vcol">
+        <div class="vch risk">▼ Los 3 más críticos</div>
+        <div class="card qt risk"><div class="qhd"><span class="qpdv">Doordash</span><span class="qsc">2.0 / 10</span></div><p>"Cada vez que como me enfermo del estómago desde hace 2 meses; en el pantry nos dan una miseria para las 9 horas laborales que tenemos…"</p></div>
+        <div class="card qt risk"><div class="qhd"><span class="qpdv">CAAAREM</span><span class="qsc">2.7 / 10</span></div><p>"No existe variedad de alimentos, siempre repiten el menú; la calidad de la cecina y el bistec es pésima, están llenas de nervios."</p></div>
+        <div class="card qt risk"><div class="qhd"><span class="qpdv">Emerson Planta</span><span class="qsc">3.0 / 10</span></div><p>"Estaría bien que cambiara la comida, siempre dan lo mismo y no hay variedad; que ya no venga salada ni quemada y que tengan buena actitud."</p></div>
+      </div>
+      <div class="vcol">
+        <div class="vch win">▲ Los 3 más positivos</div>
+        <div class="card qt win"><div class="qhd"><span class="qpdv">Avery</span><span class="qsc">10.0 / 10</span></div><p>"Olí y Migue son muy atentos y proactivos; Avery está muy satisfecho con sus servicios."</p></div>
+        <div class="card qt win"><div class="qhd"><span class="qpdv">Alcon</span><span class="qsc">10.0 / 10</span></div><p>"Disfruto mucho de la comida, me agrada el sazón, me agrada la gente que apoya en el comedor. ¡Todo bien!"</p></div>
+        <div class="card qt win"><div class="qhd"><span class="qpdv">AT&amp;T</span><span class="qsc">10.0 / 10</span></div><p>"Siempre que vengo a desayunar o comer me atienden muy bien, son muy amables."</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INSIGHTS -->
+  <section>
+    <h2>Insights estratégicos</h2>
+    <div class="card insights">
+      <div class="ins"><div class="n">1</div><div class="t"><b>Variedad es la palanca de mayor impacto.</b> Es el rubro más bajo y el segundo más comentado a la vez: moverlo sube el SINDEX global más que cualquier acción puntual por PDV. Conecta directo con el creador de ciclos.</div></div>
+      <div class="ins"><div class="n">2</div><div class="t"><b>El portafolio está sano salvo dos puntos.</b> 73% positivos y 4% negativos. Solo Emerson Planta y Doordash requieren acción correctiva; el resto es mantener y pulir.</div></div>
+      <div class="ins"><div class="n">3</div><div class="t"><b>Hay una señal de inocuidad que el score esconde.</b> "Calidad/salud" tiene la mayor proporción de negativos (27%) e incluye malestar estomacal recurrente. Bajo volumen, alto riesgo reputacional: vale escalarlo.</div></div>
+      <div class="ins"><div class="n">4</div><div class="t"><b>Atención y limpieza son el activo a proteger.</b> Las dos fortalezas más sólidas, confirmadas en números y en texto. Cualquier ajuste operativo no debería tocarlas.</div></div>
+    </div>
+  </section>
+
+  <footer>
+    <span>SINDEX · Panel comercial · Generado 28 Jun 2026</span>
+    <span>Fuente: export comensal global · Confidencial</span>
+  </footer>
+
+</div>
+
+<script>
+  const tabs=document.querySelectorAll('.tab');
+  const views={comensal:document.getElementById('comensal'),cliente:document.getElementById('cliente'),general:document.getElementById('general')};
+  const rubCli=document.getElementById('rubros-cliente-sec');
+  const rubCom=document.querySelector('section:has(h2)');
+  tabs.forEach(t=>t.addEventListener('click',()=>{
+    tabs.forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    const tab=t.dataset.t;
+    Object.values(views).forEach(v=>v.classList.add('hide'));
+    views[tab].classList.remove('hide');
+    if(rubCli){
+      if(tab==='cliente'){ rubCli.classList.remove('hide'); }
+      else{ rubCli.classList.add('hide'); }
+    }
+  }));
+</script>
+</body>
+</html>
